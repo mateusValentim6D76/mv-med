@@ -20,6 +20,7 @@ public class MedicalRegistrationEntity {
     private UUID id;
     private String name;
     private String email;
+    private String telephone;
     private String crm;
     @Enumerated(EnumType.STRING)
     private Specialty specialty;
@@ -29,6 +30,7 @@ public class MedicalRegistrationEntity {
     public MedicalRegistrationEntity(MedicalRegistrationDto data) {
         this.name = data.name();
         this.email = data.email();
+        this.telephone = data.telephone();
         this.crm = data.crm();
         this.specialty = data.specialty();
         this.address = new AddressEntity(data.address());
