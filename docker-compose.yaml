@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mv_med_db:
+    image: postgres:latest
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mv_med
+    ports:
+      - 5432:5432
+  mv-med-service:
+    image: mvalentim/mv-med
+    restart: always
+    build: C:/Desenvolvimento/Projetos_Backend/mv-med # Correção no caminho
+    working_dir: /mv-med
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING.DATASOURCE.URL: jdbc:postgresql://mv_med_db:5432/mv_med?useTimezone=true&serverTimezone=UTC  # Correção na URL do banco
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: admin
+    ports:
+      - 8000:8000
+    command: mvn spring-boot:run
+    depends_on:
+      - mv_med_db

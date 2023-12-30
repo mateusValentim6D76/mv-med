@@ -1,0 +1,25 @@
+server:
+  port: 8000
+cors:
+  origin-patterns: "http://localhost:3000,http://localhost:8000"
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://mv_med_db:5432/mv_med?useTimezone=true&serverTimezone=UTC
+    username: postgres
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: db/migration
+    baselineOnMigrate: true
+    validateOnMigrate: false
+    logging:
+      level:
+        org.flywaydb: debug
