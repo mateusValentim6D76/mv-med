@@ -8,6 +8,7 @@ import com.mv.med.enums.Specialty;
 import com.mv.med.repository.MedicalRegistrationRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("doctors")
@@ -32,12 +34,20 @@ public class MedicalController {
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     public Page<DataListDoctors> findAll(@PageableDefault(size = 10, sort = {"name", "crm"}) Pageable pageable){
-        return medicalRegistrationRepository.findAll(pageable).map(DataListDoctors::new);
+        return medicalRegistrationRepository.findByActiveTrue(pageable).map(DataListDoctors::new);
     }
 
     @PatchMapping
+    @Transactional
     public void update(@RequestBody @Valid MedicalUpdateDto data){
         var dataUpdate = medicalRegistrationRepository.getReferenceById(data.id());
         dataUpdate.updatedMedical(data);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void delete(@PathVariable UUID id){
+        var inactiveDoc = medicalRegistrationRepository.getReferenceById(id);
+        inactiveDoc.delete();
     }
 }

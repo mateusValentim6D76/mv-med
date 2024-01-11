@@ -19,6 +19,7 @@ public class MedicalRegistrationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    private Boolean active;
     private String name;
     private String email;
     private String telephone;
@@ -30,6 +31,7 @@ public class MedicalRegistrationEntity {
 
     public MedicalRegistrationEntity(MedicalRegistrationDto data) {
         this.name = data.name();
+        this.active = true;
         this.email = data.email();
         this.telephone = data.telephone();
         this.crm = data.crm();
@@ -50,5 +52,9 @@ public class MedicalRegistrationEntity {
         if (data.addressDto() != null){
             this.address.updateAddress(data.addressDto());
         }
+    }
+
+    public void delete() {
+        this.active = false;
     }
 }
