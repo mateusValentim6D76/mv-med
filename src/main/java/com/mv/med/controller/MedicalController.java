@@ -1,6 +1,7 @@
 package com.mv.med.controller;
 
 import com.mv.med.dto.DataListDoctors;
+import com.mv.med.dto.MedicalDataUpdate;
 import com.mv.med.dto.MedicalRegistrationDto;
 import com.mv.med.dto.MedicalUpdateDto;
 import com.mv.med.entities.MedicalRegistrationEntity;
@@ -33,21 +34,24 @@ public class MedicalController {
 
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
-    public Page<DataListDoctors> findAll(@PageableDefault(size = 10, sort = {"name", "crm"}) Pageable pageable){
-        return medicalRegistrationRepository.findByActiveTrue(pageable).map(DataListDoctors::new);
+    public ResponseEntity<Page<DataListDoctors>> findAll(@PageableDefault(size = 10, sort = {"name", "crm"}) Pageable pageable){
+        var getAllMedical =  medicalRegistrationRepository.findByActiveTrue(pageable).map(DataListDoctors::new);
+        return ResponseEntity.ok(getAllMedical);
     }
 
     @PatchMapping
     @Transactional
-    public void update(@RequestBody @Valid MedicalUpdateDto data){
+    public ResponseEntity update(@RequestBody @Valid MedicalUpdateDto data){
         var dataUpdate = medicalRegistrationRepository.getReferenceById(data.id());
         dataUpdate.updatedMedical(data);
+        return ResponseEntity.ok(new MedicalDataUpdate(dataUpdate));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void delete(@PathVariable UUID id){
+    public ResponseEntity delete(@PathVariable UUID id){
         var inactiveDoc = medicalRegistrationRepository.getReferenceById(id);
         inactiveDoc.delete();
+        return ResponseEntity.noContent().build();
     }
 }
